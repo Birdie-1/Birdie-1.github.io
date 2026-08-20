@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sys://[YOUR-NAME] - Backend & Systems Engineer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-canvas: #0d1117;
+            --bg-card: #161b22;
+            --bg-subtle: #21262d;
+            --border-default: #30363d;
+            --border-accent: #58a6ff;
+            --text-primary: #e6edf3;
+            --text-secondary: #8b949e;
+            --text-dim: #6e7681;
+            
+            /* Syntax & Status Colors */
+            --syntax-blue: #58a6ff;
+            --syntax-green: #7ee787;
+            --syntax-purple: #d2a8ff;
+            --syntax-orange: #ffa657;
+            --syntax-red: #ff7b72;
+            --syntax-yellow: #f2cc60;
+            
+            --font-code: 'Fira Code', monospace;
+            --font-sans: 'Inter', -apple-system, sans-serif;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-canvas);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Top Telemetry Status Bar */
+        .telemetry-bar {
+            background: #090d12;
+            border-bottom: 1px solid var(--border-default);
+            padding: 0.4rem 1.5rem;
+            font-family: var(--font-code);
+            font-size: 0.78rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .telemetry-items {
+            display: flex;
+            gap: 1.5rem;
+            list-style: none;
+            align-items: center;
+        }
+
+        .telemetry-item {
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .telemetry-item .value {
+            color: var(--syntax-green);
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--syntax-green);
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 6px var(--syntax-green);
+        }
+
+        .main-container {
+            max-width: 1100px;
+            margin: 2rem auto 5rem;
+            padding: 0 1.5rem;
+        }
+
+        /* Engineering Header */
+        .system-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px dashed var(--border-default);
+        }
+
+        .prompt-symbol {
+            font-family: var(--font-code);
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--syntax-blue);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.25rem;
+            list-style: none;
+            font-family: var(--font-code);
+            font-size: 0.85rem;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.15s;
+        }
+
+        .nav-link:hover {
+            color: var(--syntax-blue);
+        }
+
+        /* Interactive Terminal Hero */
+        .terminal-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+            margin-bottom: 3.5rem;
+        }
+
+        .terminal-topbar {
+            background: var(--bg-subtle);
+            padding: 0.6rem 1rem;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid var(--border-default);
+        }
+
+        .terminal-dots {
+            display: flex;
+            gap: 6px;
+            margin-right: 1rem;
+        }
+
+        .terminal-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .dot-red { background: #ff5f56; }
+        .dot-yellow { background: #ffbd2e; }
+        .dot-green { background: #27c93f; }
+
+        .terminal-title {
+            font-family: var(--font-code);
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .terminal-body {
+            padding: 1.5rem;
+            font-family: var(--font-code);
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+        .command-line {
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .cmd-prompt { color: var(--syntax-green); }
+        .cmd-action { color: var(--syntax-blue); }
+        .cmd-target { color: var(--syntax-purple); }
+
+        .json-response {
+            background: rgba(0, 0, 0, 0.25);
+            padding: 1rem 1.25rem;
+            border-radius: var(--radius-md);
+            border-left: 3px solid var(--syntax-blue);
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            overflow-x: auto;
+        }
+
+        .json-key { color: var(--syntax-blue); }
+        .json-string { color: var(--syntax-green); }
+        .json-boolean { color: var(--syntax-orange); }
+        .json-number { color: var(--syntax-purple); }
+
+        /* Terminal Action Buttons */
+        .cli-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1.25rem;
+            flex-wrap: wrap;
+        }
+
+        .cli-btn {
+            background: var(--bg-subtle);
+            border: 1px solid var(--border-default);
+            color: var(--text-primary);
+            font-family: var(--font-code);
+            font-size: 0.825rem;
+            padding: 0.45rem 0.9rem;
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .cli-btn:hover {
+            border-color: var(--syntax-blue);
+            color: var(--syntax-blue);
+            background: rgba(88, 166, 255, 0.1);
+        }
+
+        /* Section Headings */
+        .sec-title {
+            font-family: var(--font-code);
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .sec-title::before {
+            content: "#";
+            color: var(--syntax-blue);
+        }
+
+        /* Architecture / Skills Layers */
+        .layer-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            margin-bottom: 3.5rem;
+        }
+
+        .arch-layer {
+            background: var(--bg-card);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-lg);
+            padding: 1.25rem 1.5rem;
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .layer-meta {
+            border-right: 1px solid var(--border-default);
+            padding-right: 1rem;
+        }
+
+        .layer-level {
+            font-family: var(--font-code);
+            font-size: 0.75rem;
+            color: var(--syntax-purple);
+            text-transform: uppercase;
+        }
+
+        .layer-name {
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--text-primary);
+        }
+
+        .tech-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .tech-chip {
+            background: var(--bg-subtle);
+            border: 1px solid var(--border-default);
+            font-family: var(--font-code);
+            font-size: 0.8rem;
+            padding: 0.35rem 0.75rem;
+            border-radius: 4px;
+            color: var(--text-primary);
+        }
+
+        /* System Services (Projects) */
+        .services-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-bottom: 3.5rem;
+        }
+
+        .service-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            transition: border-color 0.2s ease;
+        }
+
+        .service-card:hover {
+            border-color: var(--border-accent);
+        }
+
+        .service-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .service-endpoint {
+            font-family: var(--font-code);
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .http-method {
+            padding: 0.15rem 0.45rem;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 0.75rem;
+        }
+
+        .http-get { background: rgba(88, 166, 255, 0.15); color: var(--syntax-blue); border: 1px solid var(--syntax-blue); }
+        .http-post { background: rgba(126, 231, 135, 0.15); color: var(--syntax-green); border: 1px solid var(--syntax-green); }
+
+        .service-status {
+            font-family: var(--font-code);
+            font-size: 0.75rem;
+            color: var(--syntax-green);
+        }
+
+        .service-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .service-desc {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+
+        .service-spec-grid {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-md);
+            padding: 0.85rem 1rem;
+            margin-bottom: 1rem;
+            font-family: var(--font-code);
+            font-size: 0.8rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.5rem;
+        }
+
+        .spec-item {
+            color: var(--text-secondary);
+        }
+
+        .spec-item strong {
+            color: var(--text-primary);
+        }
+
+        .service-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .service-tags {
+            display: flex;
+            gap: 0.4rem;
+            flex-wrap: wrap;
+        }
+
+        .service-tag {
+            font-family: var(--font-code);
+            font-size: 0.75rem;
+            color: var(--syntax-orange);
+            background: rgba(255, 166, 87, 0.08);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+        }
+
+        .service-link {
+            font-family: var(--font-code);
+            font-size: 0.825rem;
+            color: var(--syntax-blue);
+            text-decoration: none;
+        }
+
+        .service-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Git Commit Style Experience */
+        .commit-log {
+            border-left: 2px solid var(--border-default);
+            padding-left: 1.5rem;
+            margin-left: 0.5rem;
+            margin-bottom: 3.5rem;
+        }
+
+        .commit-item {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+
+        .commit-item::before {
+            content: '';
+            position: absolute;
+            left: -1.85rem;
+            top: 0.25rem;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--bg-canvas);
+            border: 2px solid var(--syntax-blue);
+        }
+
+        .commit-sha {
+            font-family: var(--font-code);
+            font-size: 0.8rem;
+            color: var(--syntax-yellow);
+            margin-bottom: 0.25rem;
+        }
+
+        .commit-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .commit-desc {
+            color: var(--text-secondary);
+            font-size: 0.925rem;
+            line-height: 1.6;
+        }
+
+        /* Contact Console */
+        .contact-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            font-family: var(--font-code);
+        }
+
+        .contact-cmd {
+            color: var(--syntax-green);
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .contact-node {
+            background: var(--bg-subtle);
+            border: 1px solid var(--border-default);
+            padding: 1rem;
+            border-radius: var(--radius-md);
+        }
+
+        .node-label {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            margin-bottom: 0.25rem;
+        }
+
+        .node-val {
+            color: var(--syntax-blue);
+            text-decoration: none;
+            font-size: 0.9rem;
+            word-break: break-all;
+        }
+
+        @media (max-width: 768px) {
+            .telemetry-bar { flex-direction: column; gap: 0.25rem; font-size: 0.7rem; }
+            .arch-layer { grid-template-columns: 1fr; gap: 0.75rem; }
+            .layer-meta { border-right: none; border-bottom: 1px solid var(--border-default); padding-bottom: 0.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Telemetry Status Bar -->
+    <div class="telemetry-bar">
+        <ul class="telemetry-items">
+            <li class="telemetry-item">
+                <span class="live-dot"></span>
+                <span>STATUS:</span>
+                <span class="value">200 OK (READY_FOR_INTERNSHIP)</span>
+            </li>
+            <li class="telemetry-item">
+                <span>FOCUS:</span>
+                <span class="value">BACKEND / SWE</span>
+            </li>
+        </ul>
+        <div class="telemetry-item">
+            <span>UPTIME:</span>
+            <span class="value">99.98%</span>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <!-- Header -->
+        <div class="system-header">
+            <div class="prompt-symbol">$ cd /home/[YOUR_NAME]</div>
+            <ul class="nav-links">
+                <li><a href="#layers" class="nav-link">--arch-layers</a></li>
+                <li><a href="#services" class="nav-link">--services</a></li>
+                <li><a href="#commits" class="nav-link">--log</a></li>
+                <li><a href="#connect" class="nav-link">--curl-contact</a></li>
+            </ul>
+        </div>
+
+        <!-- Hero Terminal Console -->
+        <div class="terminal-box">
+            <div class="terminal-topbar">
+                <div class="terminal-dots">
+                    <span class="terminal-dot dot-red"></span>
+                    <span class="terminal-dot dot-yellow"></span>
+                    <span class="terminal-dot dot-green"></span>
+                </div>
+                <span class="terminal-title">bash - engineer_telemetry.sh</span>
+            </div>
+            <div class="terminal-body">
+                <div class="command-line">
+                    <span class="cmd-prompt">user@devbox:~$</span>
+                    <span class="cmd-action">curl -X GET</span>
+                    <span class="cmd-target">https://api.engineer.internal/v1/profile</span>
+                </div>
+
+                <div class="json-response">
+<pre>{
+  <span class="json-key">"name"</span>: <span class="json-string">"[YOUR NAME]"</span>,
+  <span class="json-key">"title"</span>: <span class="json-string">"Backend & Software Engineering Student"</span>,
+  <span class="json-key">"seeking"</span>: <span class="json-string">"Internship / Co-op 2025"</span>,
+  <span class="json-key">"core_capabilities"</span>: [
+    <span class="json-string">"High-Throughput REST APIs"</span>,
+    <span class="json-string">"Relational Database Design (PostgreSQL / MySQL)"</span>,
+    <span class="json-string">"Data Pipeline & Forecasting Simulation"</span>
+  ],
+  <span class="json-key">"active_status"</span>: <span class="json-boolean">true</span>,
+  <span class="json-key">"response_time_ms"</span>: <span class="json-number">18</span>
+}</pre>
+                </div>
+
+                <div class="cli-actions">
+                    <a href="#services" class="cli-btn">&gt; explore --services</a>
+                    <a href="https://github.com/Birdie-1" target="_blank" class="cli-btn">&gt; open github/Birdie-1 ↗</a>
+                    <a href="#connect" class="cli-btn">&gt; curl --contact</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Architecture Layers (Skills) -->
+        <div id="layers">
+            <h2 class="sec-title">Architectural Stack & System Layers</h2>
+            <div class="layer-container">
+                
+                <!-- Layer 1 -->
+                <div class="arch-layer">
+                    <div class="layer-meta">
+                        <div class="layer-level">Layer 01 // Runtime & API</div>
+                        <div class="layer-name">Backend Core</div>
+                    </div>
+                    <div class="tech-chips">
+                        <span class="tech-chip">Node.js</span>
+                        <span class="tech-chip">Express.js</span>
+                        <span class="tech-chip">TypeScript</span>
+                        <span class="tech-chip">Python</span>
+                        <span class="tech-chip">FastAPI</span>
+                        <span class="tech-chip">REST Protocol</span>
+                    </div>
+                </div>
+
+                <!-- Layer 2 -->
+                <div class="arch-layer">
+                    <div class="layer-meta">
+                        <div class="layer-level">Layer 02 // Persistence</div>
+                        <div class="layer-name">Data & Storage</div>
+                    </div>
+                    <div class="tech-chips">
+                        <span class="tech-chip">PostgreSQL</span>
+                        <span class="tech-chip">MySQL</span>
+                        <span class="tech-chip">Firebase</span>
+                        <span class="tech-chip">SQL Indexing</span>
+                        <span class="tech-chip">Schema Normalization</span>
+                    </div>
+                </div>
+
+                <!-- Layer 3 -->
+                <div class="arch-layer">
+                    <div class="layer-meta">
+                        <div class="layer-level">Layer 03 // Tooling & Client</div>
+                        <div class="layer-name">Infra & Frontend</div>
+                    </div>
+                    <div class="tech-chips">
+                        <span class="tech-chip">React</span>
+                        <span class="tech-chip">Git / GitHub Workflow</span>
+                        <span class="tech-chip">Postman API Testing</span>
+                        <span class="tech-chip">Linux CLI</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Services (Projects) -->
+        <div id="services">
+            <h2 class="sec-title">Deployed Systems & Services</h2>
+            <div class="services-grid">
+
+                <!-- Service 1 -->
+                <div class="service-card">
+                    <div class="service-header">
+                        <div class="service-endpoint">
+                            <span class="http-method http-post">POST</span>
+                            <span>/api/v1/inventory/forecast</span>
+                        </div>
+                        <span class="service-status">[STATUS: HEALTHY]</span>
+                    </div>
+                    <h3 class="service-title">Inventory Management & Forecasting System</h3>
+                    <p class="service-desc">
+                        Full-lifecycle inventory service computing projected stock depletion rates using transactional ledger records and consumption velocity curves.
+                    </p>
+                    <div class="service-spec-grid">
+                        <div class="spec-item"><strong>Protocol:</strong> RESTful HTTP/JSON</div>
+                        <div class="spec-item"><strong>Primary Storage:</strong> PostgreSQL</div>
+                        <div class="spec-item"><strong>Runtime:</strong> Node.js / TypeScript</div>
+                    </div>
+                    <div class="service-footer">
+                        <div class="service-tags">
+                            <span class="service-tag">#full-stack</span>
+                            <span class="service-tag">#time-series</span>
+                            <span class="service-tag">#react</span>
+                        </div>
+                        <a href="https://github.com/Birdie-1" target="_blank" class="service-link">&gt; git clone /repo ↗</a>
+                    </div>
+                </div>
+
+                <!-- Service 2 -->
+                <div class="service-card">
+                    <div class="service-header">
+                        <div class="service-endpoint">
+                            <span class="http-method http-get">GET</span>
+                            <span>/api/v1/inventory/items</span>
+                        </div>
+                        <span class="service-status">[STATUS: HIGH-PERFORMANCE]</span>
+                    </div>
+                    <h3 class="service-title">Inventory Management API</h3>
+                    <p class="service-desc">
+                        High-throughput REST API featuring route-level authorization, transaction safety, and sub-second SQL queries for high-volume inventory updates.
+                    </p>
+                    <div class="service-spec-grid">
+                        <div class="spec-item"><strong>Framework:</strong> FastAPI / Express</div>
+                        <div class="spec-item"><strong>Auth:</strong> JWT Bearer Tokens</div>
+                        <div class="spec-item"><strong>DB Engine:</strong> PostgreSQL</div>
+                    </div>
+                    <div class="service-footer">
+                        <div class="service-tags">
+                            <span class="service-tag">#api-service</span>
+                            <span class="service-tag">#jwt-auth</span>
+                            <span class="service-tag">#crud-engine</span>
+                        </div>
+                        <a href="https://github.com/Birdie-1" target="_blank" class="service-link">&gt; git clone /repo ↗</a>
+                    </div>
+                </div>
+
+                <!-- Service 3 -->
+                <div class="service-card">
+                    <div class="service-header">
+                        <div class="service-endpoint">
+                            <span class="http-method http-post">POST</span>
+                            <span>/api/v1/stock/predict</span>
+                        </div>
+                        <span class="service-status">[STATUS: ANALYTICS]</span>
+                    </div>
+                    <h3 class="service-title">Stock Forecasting System</h3>
+                    <p class="service-desc">
+                        Data-driven calculation worker analyzing historical supply fluctuations to recommend automated purchase thresholds.
+                    </p>
+                    <div class="service-spec-grid">
+                        <div class="spec-item"><strong>Language:</strong> Python 3.x</div>
+                        <div class="spec-item"><strong>Storage:</strong> MySQL</div>
+                        <div class="spec-item"><strong>Module:</strong> Data Pipeline</div>
+                    </div>
+                    <div class="service-footer">
+                        <div class="service-tags">
+                            <span class="service-tag">#python</span>
+                            <span class="service-tag">#predictive-model</span>
+                        </div>
+                        <a href="https://github.com/Birdie-1" target="_blank" class="service-link">&gt; git clone /repo ↗</a>
+                    </div>
+                </div>
+
+                <!-- Service 4 -->
+                <div class="service-card">
+                    <div class="service-header">
+                        <div class="service-endpoint">
+                            <span class="http-method http-get">GET</span>
+                            <span>/api/v1/f1-sim/telemetry</span>
+                        </div>
+                        <span class="service-status">[STATUS: SIMULATION]</span>
+                    </div>
+                    <h3 class="service-title">Formula 1 Strategy Simulator</h3>
+                    <p class="service-desc">
+                        Algorithmic engine simulating dynamic tire compound degradation, track temperature deltas, and optimal pit-stop race strategies.
+                    </p>
+                    <div class="service-spec-grid">
+                        <div class="spec-item"><strong>Logic:</strong> Discrete Simulation</div>
+                        <div class="spec-item"><strong>Engine:</strong> Python / TypeScript</div>
+                    </div>
+                    <div class="service-footer">
+                        <div class="service-tags">
+                            <span class="service-tag">#algorithms</span>
+                            <span class="service-tag">#modeling</span>
+                        </div>
+                        <a href="https://github.com/Birdie-1" target="_blank" class="service-link">&gt; git clone /repo ↗</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Git Commit Log (Experience) -->
+        <div id="commits">
+            <h2 class="sec-title">Execution Log / Experience</h2>
+            <div class="commit-log">
+                <div class="commit-item">
+                    <div class="commit-sha">commit a94f2e1 (HEAD -&gt; main)</div>
+                    <h3 class="commit-title">Backend Development Intern — [Company / Org]</h3>
+                    <p class="commit-desc">
+                        Designed, implemented, and documented RESTful API endpoints. Refactored database schema structures and query execution plans for production reliability.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Connect Console -->
+        <div id="connect">
+            <h2 class="sec-title">Establish Handshake / Contact</h2>
+            <div class="contact-card">
+                <div class="contact-cmd">$ curl --header "Content-Type: application/json" --request POST /api/contact</div>
+                <div class="contact-grid">
+                    <div class="contact-node">
+                        <div class="node-label">// DIRECT EMAIL</div>
+                        <a href="mailto:[YOUR_EMAIL@EXAMPLE.COM]" class="node-val">[YOUR_EMAIL@EXAMPLE.COM]</a>
+                    </div>
+                    <div class="contact-node">
+                        <div class="node-label">// REPO HUB</div>
+                        <a href="https://github.com/Birdie-1" target="_blank" class="node-val">github.com/Birdie-1</a>
+                    </div>
+                    <div class="contact-node">
+                        <div class="node-label">// TARGET POSITION</div>
+                        <div class="node-val" style="color: var(--syntax-green);">Backend / SWE Intern 2025</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
