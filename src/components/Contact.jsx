@@ -20,84 +20,109 @@ export default function Contact({ profile, onCopyEmail, onCopyPhone }) {
           Feel free to reach out directly via email or phone.
         </p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 mb-6">
-          {/* Email Card */}
-          <div className="p-4 rounded-lg bg-theme-inset border-2 border-theme hover:border-theme-strong flex flex-col justify-between gap-2 transition-all">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-mono text-theme-dim flex items-center gap-1.5 font-bold">
-                <Mail size={13} className="text-theme-main" />
-                <span>EMAIL ADDRESS</span>
-              </span>
+        {/* Horizontal Row Cards */}
+        <div className="space-y-3">
+          {/* Email Row Card */}
+          <div className="p-4 rounded-lg bg-theme-inset border-2 border-theme hover:border-theme-strong flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-all">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-md bg-theme-card border-2 border-theme-strong flex items-center justify-center text-theme-main shrink-0 shadow-xs">
+                <Mail size={18} />
+              </div>
+              <div className="min-w-0">
+                <span className="text-[11px] font-mono text-theme-dim font-bold uppercase tracking-wider block">
+                  Email Address
+                </span>
+                <a
+                  href={`mailto:${profile.email}`}
+                  className="text-sm sm:text-base font-bold text-theme-main hover:underline transition-colors font-mono break-all sm:break-normal"
+                >
+                  {profile.email}
+                </a>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
               <button
                 onClick={() => onCopyEmail(profile.email)}
-                className="text-xs font-mono text-theme-main bg-theme-accent px-2 py-0.5 rounded font-extrabold hover:underline flex items-center gap-1 cursor-pointer shadow-xs border border-theme-strong"
-                title="Copy to clipboard"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono font-extrabold rounded-md bg-theme-card hover:bg-theme-card-hover border-2 border-theme-strong text-theme-main shadow-codecademy-sm hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition-all cursor-pointer"
+                title="Copy Email"
               >
-                <Copy size={11} />
+                <Copy size={12} />
                 <span>Copy</span>
               </button>
+              <a
+                href={`mailto:${profile.email}?subject=Internship/Co-op Opportunity`}
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-mono font-extrabold rounded-md bg-theme-accent hover:bg-codecademy-yellowHover border-2 border-theme-strong text-theme-accent-text shadow-codecademy-sm hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition-all cursor-pointer"
+              >
+                <Send size={12} />
+                <span>Send Email</span>
+              </a>
             </div>
-            <a
-              href={`mailto:${profile.email}`}
-              className="text-sm font-bold text-theme-main hover:underline transition-colors break-all"
-            >
-              {profile.email}
-            </a>
           </div>
 
-          {/* Phone Card */}
-          <div className="p-4 rounded-lg bg-theme-inset border-2 border-theme hover:border-theme-strong flex flex-col justify-between gap-2 transition-all">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-mono text-theme-dim flex items-center gap-1.5 font-bold">
-                <Phone size={13} className="text-theme-main" />
-                <span>PHONE NUMBER</span>
-              </span>
-              {onCopyPhone && (
+          {/* Phone Row Card */}
+          <div className="p-4 rounded-lg bg-theme-inset border-2 border-theme hover:border-theme-strong flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-all">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-md bg-theme-card border-2 border-theme-strong flex items-center justify-center text-theme-main shrink-0 shadow-xs">
+                <Phone size={18} />
+              </div>
+              <div>
+                <span className="text-[11px] font-mono text-theme-dim font-bold uppercase tracking-wider block">
+                  Phone Number
+                </span>
+                <a
+                  href={`tel:${profile.phone.replace(/[^0-9]/g, '')}`}
+                  className="text-sm sm:text-base font-bold text-theme-main hover:underline transition-colors font-mono"
+                >
+                  {profile.phone}
+                </a>
+              </div>
+            </div>
+            {onCopyPhone && (
+              <div className="self-end sm:self-center shrink-0">
                 <button
                   onClick={() => onCopyPhone(profile.phone)}
-                  className="text-xs font-mono text-theme-main bg-theme-accent px-2 py-0.5 rounded font-extrabold hover:underline flex items-center gap-1 cursor-pointer shadow-xs border border-theme-strong"
-                  title="Copy phone"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono font-extrabold rounded-md bg-theme-card hover:bg-theme-card-hover border-2 border-theme-strong text-theme-main shadow-codecademy-sm hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition-all cursor-pointer"
+                  title="Copy Phone"
                 >
-                  <Copy size={11} />
+                  <Copy size={12} />
                   <span>Copy</span>
                 </button>
-              )}
+              </div>
+            )}
+          </div>
+
+          {/* GitHub Row Card */}
+          <div className="p-4 rounded-lg bg-theme-inset border-2 border-theme hover:border-theme-strong flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-all">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-md bg-theme-card border-2 border-theme-strong flex items-center justify-center text-theme-main shrink-0 shadow-xs">
+                <GithubIcon size={18} />
+              </div>
+              <div>
+                <span className="text-[11px] font-mono text-theme-dim font-bold uppercase tracking-wider block">
+                  GitHub Profile
+                </span>
+                <a
+                  href={profile.github}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-sm sm:text-base font-bold text-theme-main hover:underline transition-colors font-mono"
+                >
+                  github.com/Birdie-1
+                </a>
+              </div>
             </div>
-            <a
-              href={`tel:${profile.phone.replace(/[^0-9]/g, '')}`}
-              className="text-sm font-bold text-theme-main hover:underline transition-colors"
-            >
-              {profile.phone}
-            </a>
+            <div className="self-end sm:self-center shrink-0">
+              <a
+                href={profile.github}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono font-extrabold rounded-md bg-theme-card hover:bg-theme-card-hover border-2 border-theme-strong text-theme-main shadow-codecademy-sm hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition-all cursor-pointer"
+              >
+                <span>View GitHub</span>
+                <ExternalLink size={12} />
+              </a>
+            </div>
           </div>
-
-          {/* GitHub Card */}
-          <div className="p-4 rounded-lg bg-theme-inset border-2 border-theme hover:border-theme-strong flex flex-col justify-between gap-2 transition-all">
-            <span className="text-xs font-mono text-theme-dim flex items-center gap-1.5 font-bold">
-              <GithubIcon size={14} className="text-theme-main" />
-              <span>GITHUB PROFILE</span>
-            </span>
-            <a
-              href={profile.github}
-              target="_blank"
-              rel="noreferrer"
-              className="text-sm font-bold text-theme-main hover:underline transition-colors flex items-center justify-between mt-2"
-            >
-              <span>github.com/Birdie-1</span>
-              <ExternalLink size={14} />
-            </a>
-          </div>
-        </div>
-
-        {/* Direct Action */}
-        <div className="flex flex-wrap gap-3 items-center pt-2">
-          <a
-            href={`mailto:${profile.email}?subject=Internship/Co-op Opportunity`}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-md bg-theme-accent hover:bg-codecademy-yellowHover text-theme-accent-text font-extrabold text-sm border-2 border-theme-strong shadow-codecademy-sm hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition-all"
-          >
-            <Send size={15} />
-            <span>Send Direct Email</span>
-          </a>
         </div>
       </div>
     </section>
