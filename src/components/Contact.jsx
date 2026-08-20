@@ -1,6 +1,6 @@
 import React from 'react';
 import { Mail, Copy, ExternalLink, Send, Phone } from 'lucide-react';
-import { GithubIcon, FacebookIcon } from './Icons';
+import { GithubIcon } from './Icons';
 
 export default function Contact({ profile, onCopyEmail, onCopyPhone }) {
   return (
@@ -20,7 +20,7 @@ export default function Contact({ profile, onCopyEmail, onCopyPhone }) {
           Feel free to reach out directly via email or phone.
         </p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 mb-6">
           {/* Email Card */}
           <div className="p-4 rounded-lg bg-theme-inset border-2 border-theme hover:border-theme-strong flex flex-col justify-between gap-2 transition-all">
             <div className="flex items-center justify-between">
@@ -81,14 +81,12 @@ export default function Contact({ profile, onCopyEmail, onCopyPhone }) {
               href={profile.github}
               target="_blank"
               rel="noreferrer"
-              className="text-sm font-bold text-theme-main hover:underline transition-colors flex items-center justify-between"
+              className="text-sm font-bold text-theme-main hover:underline transition-colors flex items-center justify-between mt-2"
             >
               <span>github.com/Birdie-1</span>
               <ExternalLink size={14} />
             </a>
           </div>
-
-          
         </div>
 
         {/* Direct Action */}
@@ -100,7 +98,6 @@ export default function Contact({ profile, onCopyEmail, onCopyPhone }) {
             <Send size={15} />
             <span>Send Direct Email</span>
           </a>
-          
         </div>
       </div>
     </section>

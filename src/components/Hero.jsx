@@ -1,25 +1,18 @@
 import React from 'react';
-import { ArrowDown, Copy, ExternalLink, MapPin, Phone, Mail, Award } from 'lucide-react';
+import { ArrowDown, ExternalLink, MapPin, Phone, Mail } from 'lucide-react';
 
-export default function Hero({ profile, onCopyEmail, onCopyPhone }) {
+export default function Hero({ profile }) {
   return (
     <header className="mb-14">
       {/* Top Profile Bar */}
       <div className="flex flex-col-reverse sm:flex-row sm:items-center justify-between gap-6 mb-8">
         <div>
-          {/* Status Badge & GPA */}
+          {/* Status Badge */}
           <div className="flex flex-wrap items-center gap-2 mb-3">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-600/30 text-emerald-700 dark:text-emerald-400 text-xs font-mono font-bold">
               <span className="w-2 h-2 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-pulse shadow-[0_0_8px_#10b981]" />
               {profile.statusBadge}
             </div>
-
-            {profile.gpa && (
-              <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-theme-accent border border-theme-strong text-theme-accent-text text-xs font-mono font-extrabold shadow-sm">
-                <Award size={13} />
-                <span>GPA: {profile.gpa}</span>
-              </div>
-            )}
           </div>
 
           <h1 className="text-2xl sm:text-3.5xl font-extrabold text-theme-main tracking-tight flex flex-wrap items-baseline gap-2">
@@ -81,7 +74,6 @@ export default function Hero({ profile, onCopyEmail, onCopyPhone }) {
           <span>Explore Projects</span>
           <ArrowDown size={15} />
         </a>
-
 
         <a
           href={profile.github}
